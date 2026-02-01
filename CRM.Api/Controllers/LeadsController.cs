@@ -5,7 +5,7 @@ using CRM.Api.Models;
 namespace CRM.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class LeadsController : ControllerBase
 {
     private readonly AppDbContext _context;
@@ -15,24 +15,81 @@ public class LeadsController : ControllerBase
         _context = context;
     }
 
-    // GET /leads
+    // =========================================
+    // GET: api/leads
+    // Get all leads
+    // =========================================
     [HttpGet]
-    public IActionResult Get()
+    public IActionResult GetAll()
     {
-        var leads = _context.Leads.ToList();
+        var leads = _context.Leads
+                            .OrderByDescending(x => x.Id)
+                            .ToList();
+
         return Ok(leads);
     }
 
-    // POST /leads
-    [HttpPost]
-    public IActionResult Create(Lead lead)
+    // =========================================
+    // GET: api/leads/5
+    // Get single lead
+    // =========================================
+    [HttpGet("{id}")]
+    public IActionResult GetById(int id)
     {
-        _context.Leads.Add(lead);
-        _context.SaveChanges();
+        var lead = _context.Leads.Find(id);
+
+        if (lead == null)
+            return NotFound();
+
         return Ok(lead);
     }
 
-    // DELETE /leads/1
+    // =========================================
+    // POST: api/leads
+    // Create lead
+    // =========================================
+    [HttpPost]
+    public IActionResult Create([FromBody] Lead lead)
+    {
+        if (lead == null)
+            return BadRequest();
+
+        lead.CreatedDate = DateTime.UtcNow;
+
+        _context.Leads.Add(lead);
+        _context.SaveChanges();
+
+        return Ok(lead);
+    }
+
+    // =========================================
+    // PUT: api/leads/5
+    // Update lead
+    // =========================================
+    [HttpPut("{id}")]
+    public IActionResult Update(int id, [FromBody] Lead updatedLead)
+    {
+        var lead = _context.Leads.Find(id);
+
+        if (lead == null)
+            return NotFound();
+
+        lead.Name = updatedLead.Name;
+        lead.Email = updatedLead.Email;
+        lead.Phone = updatedLead.Phone;
+        lead.Company = updatedLead.Company;
+        lead.Source = updatedLead.Source;
+        lead.Status = updatedLead.Status;
+
+        _context.SaveChanges();
+
+        return Ok(lead);
+    }
+
+    // =========================================
+    // DELETE: api/leads/5
+    // Delete lead
+    // =========================================
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
@@ -47,4 +104,3 @@ public class LeadsController : ControllerBase
         return Ok();
     }
 }
-
