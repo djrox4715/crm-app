@@ -1,0 +1,11 @@
+# backend
+bin/
+obj/
+
+# frontend
+node_modules/
+build/
+
+# misc
+.env
+.DS_Store
