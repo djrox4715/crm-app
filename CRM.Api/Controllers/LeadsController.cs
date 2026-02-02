@@ -1,6 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using CRM.Api.Data;
 using CRM.Api.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CRM.Api.Controllers;
 
@@ -15,91 +16,38 @@ public class LeadsController : ControllerBase
         _context = context;
     }
 
-    // =========================================
-    // GET: api/leads
-    // Get all leads
-    // =========================================
+    // ================= GET =================
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> Get()
     {
-        var leads = _context.Leads
-                            .OrderByDescending(x => x.Id)
-                            .ToList();
+        var leads = await _context.Leads
+            .OrderByDescending(x => x.Id)
+            .ToListAsync();
 
         return Ok(leads);
     }
 
-    // =========================================
-    // GET: api/leads/5
-    // Get single lead
-    // =========================================
-    [HttpGet("{id}")]
-    public IActionResult GetById(int id)
-    {
-        var lead = _context.Leads.Find(id);
-
-        if (lead == null)
-            return NotFound();
-
-        return Ok(lead);
-    }
-
-    // =========================================
-    // POST: api/leads
-    // Create lead
-    // =========================================
+    // ================= POST =================
     [HttpPost]
-    public IActionResult Create([FromBody] Lead lead)
+    public async Task<IActionResult> Create([FromBody] Lead lead)
     {
-        if (lead == null)
-            return BadRequest();
-
-        lead.CreatedDate = DateTime.UtcNow;
-
         _context.Leads.Add(lead);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return Ok(lead);
     }
 
-    // =========================================
-    // PUT: api/leads/5
-    // Update lead
-    // =========================================
-    [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] Lead updatedLead)
-    {
-        var lead = _context.Leads.Find(id);
-
-        if (lead == null)
-            return NotFound();
-
-        lead.Name = updatedLead.Name;
-        lead.Email = updatedLead.Email;
-        lead.Phone = updatedLead.Phone;
-        lead.Company = updatedLead.Company;
-        lead.Source = updatedLead.Source;
-        lead.Status = updatedLead.Status;
-
-        _context.SaveChanges();
-
-        return Ok(lead);
-    }
-
-    // =========================================
-    // DELETE: api/leads/5
-    // Delete lead
-    // =========================================
+    // ================= DELETE =================
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var lead = _context.Leads.Find(id);
+        var lead = await _context.Leads.FindAsync(id);
 
         if (lead == null)
             return NotFound();
 
         _context.Leads.Remove(lead);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         return Ok();
     }
