@@ -10,9 +10,17 @@ public class AppDbContext : DbContext
     {
     }
 
+    // Leads Module
     public DbSet<Lead> Leads { get; set; }
 
-    // ⭐ ADD THESE
+    // Custom Fields System
     public DbSet<CustomFieldDefinition> CustomFieldDefinitions { get; set; }
     public DbSet<CustomFieldValue> CustomFieldValues { get; set; }
+    
+    // View System
+    public DbSet<ViewDefinition> ViewDefinitions { get; set; }
+    public DbSet<ViewColumn> ViewColumns { get; set; }
+    public DbSet<ViewFilter> ViewFilters { get; set; }
+    public DbSet<ViewSorting> ViewSorting { get; set; }
+    public DbSet<ViewGrouping> ViewGrouping { get; set; }
 }

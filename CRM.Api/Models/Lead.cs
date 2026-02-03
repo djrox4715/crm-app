@@ -4,14 +4,14 @@ public class Lead
 {
     public int Id { get; set; }
 
-    public string Name { get; set; }
-    public string Email { get; set; }
+    public string? Name { get; set; }
+    public string? Email { get; set; }
+    public string? Phone { get; set; }
+    public string? Company { get; set; }
+    public string? Source { get; set; }
+    public string? Status { get; set; }
 
-    // NEW FIELDS
-    public string Phone { get; set; }
-    public string Company { get; set; }
-    public string Source { get; set; }   // Website, Referral, Ads
-    public string Status { get; set; }   // New, Contacted, Qualified
-
-    public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+    // ✅ NOT stored in DB - only used for API responses
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public Dictionary<string, object>? CustomFields { get; set; } = new();
 }
